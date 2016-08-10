@@ -30,31 +30,30 @@ void	msg_read(t_env *e)
 {
 	t_msg		msgp;
 
-	if (msgrcv(e->msgqid, &msgp, sizeof(msgp.mtext), 0,
-		MSG_NOERROR ) == -1)
-	{
+	msgp.mtype = e->team;
+	if (msgrcv(e->msgqid, &msgp, sizeof(msgp) - sizeof(long), e->team,
+		 IPC_NOWAIT ) == -1)
 		perror("msgrcv");
-		// exit(1);
-	}
 	else
-		printf("msg : %s\n", msgp.mtext);
+	{
+		e->target = msgp.target;
+		printf("msg rcv, team : %d, target PID : %d\n", msgp.team, msgp.target);
+	}
+	printf("msg type : %ld\n", msgp.mtype);
+
 }
 
-void	msg_send(t_env *e)
+void	msg_send(t_env *e, pid_t target)
 {
 	t_msg		msgp;
-	int			i = 0;
-	char		*tmp;
 
-	tmp = "YOOOOO\n";
-	while (i < 20)
-	{
-		msgp.mtext[i] = tmp[i];
-		i++;
-	}
-	printf("msgp.mtext : %s\n", msgp.mtext);
+	msgp.mtype = e->team;
+	msgp.team = e->team;
+	msgp.target = target;
+	printf("message to send, team : %d, target PID : %d, size %zu, type : %ld\n",
+		msgp.team, msgp.target, sizeof(msgp) - sizeof(long), msgp.mtype);
 
-	if (msgsnd(e->msgqid, &msgp, sizeof(msgp.mtext), IPC_NOWAIT) == -1)
+	if (msgsnd(e->msgqid, &msgp, sizeof(msgp) - sizeof(long), IPC_NOWAIT) == -1)
 	{
 		perror("msgsnd");
 		exit(1);

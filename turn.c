@@ -13,6 +13,8 @@ void	begin_turn(t_env *e)
 		if (point->player.player == e->player)
 		{
 			e->curr_ptr = point;
+			if (e->leader != 1)
+				check_leader(e);
 			test_play(e);
 			break ;
 		}
@@ -75,4 +77,24 @@ int		check_elim(t_env *e)
 	if (check_team(up, down, right, left))
 		return (1);
 	return (0);
+}
+
+int		check_victory(t_env *e)
+{
+	t_point	*point;
+	void	*tmp;
+	int		count;
+
+	count = 0;
+	tmp = e->addr + (sizeof(int) * 2);
+	while ((size_t)((void*)tmp - e->addr) < e->size)
+	{
+		point = (t_point*)(tmp);
+		if (point->player.team != 0 && point->player.team != e->team)
+			count++;
+		tmp += sizeof(t_point);
+	}
+	if (count > 0)
+		return (0);
+	return (1);
 }

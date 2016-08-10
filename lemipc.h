@@ -5,6 +5,7 @@
 # define BOARD_SIZE_Y	5
 # define MAX_PLAYER		50
 # define MAX_TEAM		10
+# define TEXT_SIZE		20
 # include "libft.h"
 # include <sys/types.h>
 # include <sys/ipc.h>
@@ -18,8 +19,9 @@
 # include <sys/msg.h>
 
 typedef struct		s_msg{
-	long mtype;
-	char mtext[20];
+	long			mtype;
+	int				team;
+	pid_t			target;
 }					t_msg;
 
 union semun {
@@ -36,6 +38,7 @@ typedef struct		s_player
 	pid_t			player;
 	int				is_playing;
 	int				num;
+	int				is_leader;
 }					t_player;
 
 typedef struct		s_point
@@ -57,6 +60,8 @@ typedef struct		s_env
 	int				team;
 	int				num;
 	pid_t			player;
+	pid_t			leader;
+	pid_t			target;
 	void			*curr_ptr;
 }					t_env;
 
@@ -72,17 +77,21 @@ void	find_sem(t_env *e);
 void	op_sem_verhogen(t_env *e);
 void	op_sem_proberen(t_env *e);
 void	init_shm(t_env *e);
-void	find_shm(t_env *e);
+int		find_shm(t_env *e);
 void	init_msgq(t_env *e);
 void	find_msgq(t_env *e);
 void	msg_read(t_env *e);
-void	msg_send(t_env *e);
+void	msg_send(t_env *e, pid_t target);
 void	catch_sig(int sig);
 void	signal_handling(t_env *e);
 void	test_play(t_env *e);
 char	looking_for_nearest_foe(t_env *e);
 int		check_elim(t_env *e);
 void	player_lost(t_env *e);
+void	check_leader(t_env *e);
+char	find_target(t_env *e);
+char	follow_foe(t_env *e, t_point *nearest);
+int		check_victory(t_env *e);
 
 
 #endif

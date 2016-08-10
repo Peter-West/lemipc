@@ -4,7 +4,7 @@ t_env *s;
 
 void	catch_sig(int sig)
 {
-	printf("signal caught : %d\n", sig);
+	printf("\nsignal caught : %d\n", sig);
 	clear_shm(s);
 	clear_sem(s);
 	clear_msgq(s);

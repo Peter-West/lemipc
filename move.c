@@ -2,10 +2,13 @@
 
 void	swap_info(t_point *old_p, t_point *new_p)
 {
+	if (!new_p)
+		return ;
 	new_p->player = old_p->player;
 	old_p->player.team = 0;
 	old_p->player.player = 0;
 	old_p->player.is_playing = 0;
+	old_p->player.is_leader = 0;
 	old_p->player.num = 0;
 }
 
@@ -15,8 +18,8 @@ void	*is_point_occupied(t_env *e, int x, int y)
 	t_point	*point;
 
 	tmp = e->addr + (sizeof(int) * 2);
-	printf("is_point_occupied X : %d\n", x);
-	printf("is_point_occupied Y : %d\n", y);
+	// printf("is_point_occupied X : %d\n", x);
+	// printf("is_point_occupied Y : %d\n", y);
 	while ((size_t)((void*)tmp - e->addr) < e->size)
 	{
 		point = (t_point*)(tmp);

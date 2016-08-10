@@ -19,17 +19,18 @@ void	init_shm(t_env *e)
 	*((int*)(e->addr + sizeof(int))) = -1;
 }
 
-void	find_shm(t_env *e)
+int		find_shm(t_env *e)
 {
 	e->size = (BOARD_SIZE_X * BOARD_SIZE_Y * (sizeof(t_point))) + (sizeof(int) * 2);
 	if ((e->shmid = shmget(e->key, e->size, 0666)) < 0)
 	{
 		perror("shmget");
-		exit(1);
+		return (-1);
 	}
 	if ((e->addr = shmat(e->shmid, NULL, 0)) == (void*)-1)
 	{
 		perror("shmat");
 		exit(1);
 	}
+	return (0);
 }

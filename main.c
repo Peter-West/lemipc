@@ -40,6 +40,7 @@ void	create_board(t_env *e)
 			data->y = y;
 			data->player.team = 0;
 			data->player.player = 0;
+			data->player.is_leader = 0;
 			data->player.is_playing = 0;
 			mem_ptr += sizeof(t_point);
 			x++;
@@ -69,6 +70,26 @@ int		check_team_nbr(char *team)
 	return (1);
 }
 
+void	check_leader(t_env *e)
+{
+	void		*tmp;
+	t_point		*point;
+
+	tmp = e->addr + (sizeof(int) * 2);
+	while ( (size_t)((void*)tmp - e->addr) < e->size)		
+	{
+		point = (t_point*)(tmp);
+		if (point->player.team == e->team && point->player.is_leader)
+		{
+			e->leader = point->player.player;
+			return ;
+		}
+		tmp += sizeof(t_point);
+	}
+	((t_point*)(e->curr_ptr))->player.is_leader = 1;
+	e->leader = 1;
+}
+
 void	mng_player(t_env *e, char *team)
 {
 	printf("Team : %s\n", team);
@@ -78,6 +99,7 @@ void	mng_player(t_env *e, char *team)
 	e->team = (ft_atoi(team));
 	e->player = getpid();
 	e->num = *((int*)e->addr);
+	e->target = 0;
 }
 
 void		*place_player_start(t_env *e, int x, int y)
@@ -114,6 +136,7 @@ void	starting_point(t_env *e)
 	int		y;
 	void	*loop;
 
+	srand(time(NULL));
 	loop = NULL;
 	while (!loop)
 	{
@@ -126,43 +149,45 @@ void	starting_point(t_env *e)
 	((t_point*)(loop))->player.num = *((int*)e->addr);
 }
 
+void	init_env(t_env *e, char *team)
+{
+	signal_handling(e);
+	if (find_shm(e) == -1)
+	{
+		init_shm(e);
+		init_sem(e);
+		init_msgq(e);
+		create_board(e);	
+	}
+	else 
+	{
+		find_sem(e);
+		find_msgq(e);
+	}
+	mng_player(e, team);
+	starting_point(e);
+}
+
 int main(int argc, char **argv)
 {
 	t_env	e;
 
 	e.key = ftok(argv[0], 'a');
-	printf("key : %d\n", e.key);
-	srand(time(NULL));
-	if (argc < 2)
+	if (argc == 2)
 	{
-		signal_handling(&e);
-		init_shm(&e);
-		init_sem(&e);
-		init_msgq(&e);
-		create_board(&e);
-		while (1)
-		{
-			test_print(&e);
-			// msg_read(&e);
-			sleep(1);
-		}
-	}
-	else if (argc == 2)
-	{
-		find_shm(&e);
-		find_sem(&e);
-		find_msgq(&e);
-		mng_player(&e, argv[1]);
-		starting_point(&e);
+		init_env(&e, argv[1]);
 		while (1)
 		{
 			op_sem_proberen(&e);
 			test_print(&e);
 			if (check_elim(&e))
 				player_lost(&e);
+			msg_read(&e);
 			begin_turn(&e);
-			// msg_send(&e);
 			op_sem_verhogen(&e);
+			if (check_victory(&e))
+				printf("VICTOIRRRRRRRRE team : %d\n", e.team);
+			printf("leader : %d\n", e.leader);
 			sleep(2);
 		}
 	}
