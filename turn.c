@@ -6,7 +6,6 @@ void	begin_turn(t_env *e)
 	t_point	*point;
 
 	tmp = e->addr + (sizeof(int) * 2);
-	*((int*)(e->addr + sizeof(int))) = e->num;
 	while ((size_t)((void*)tmp - e->addr) < e->size)
 	{
 		point = ((t_point*)(tmp));
@@ -94,6 +93,7 @@ int		check_victory(t_env *e)
 			count++;
 		tmp += sizeof(t_point);
 	}
+	printf("count check victory : %d\n", count);
 	if (count > 0)
 		return (0);
 	return (1);

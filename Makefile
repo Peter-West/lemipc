@@ -17,7 +17,8 @@ CC = clang-3.5
 # CC = gcc
 INCLUDES=-I libft/includes
 LIB=libft/libft.a
-SRC=main.c clean.c play.c move.c turn.c sem.c shm.c msg.c signal.c end.c
+SRC=main.c clean.c play.c move.c turn.c sem.c shm.c msg.c signal.c end.c \
+start.c
 OBJ=$(SRC:.c=.o)
 
 all: $(NAME) finish

@@ -8,7 +8,7 @@ void	test_print(t_env *e)
 
 	i = 0;
 	printf("number of player : %d\n", *((int*)e->addr));
-	printf("current player : %d\n", *((int*)(e->addr + sizeof(int))) );
+	printf("start : %d\n", *((int*)(e->addr + sizeof(int))));
 	tmp = e->addr + (sizeof(int) * 2);
 	while ( (size_t)((void*)tmp - e->addr) < e->size)
 	{
@@ -47,59 +47,6 @@ void	create_board(t_env *e)
 		}
 		y++;
 	}
-}
-
-int		check_team_nbr(char *team)
-{
-	int		i;
-
-	i = 0;
-	while (team[i] != '\0')
-	{
-		if (!ft_isdigit(team[i]))
-		{
-			printf("Team must be a number\n");
-			return(0);
-		}
-		i++;
-	}
-	if (ft_atoi(team) < 1)
-	{
-		printf("Team must superior to zero\n");
-	}
-	return (1);
-}
-
-void	check_leader(t_env *e)
-{
-	void		*tmp;
-	t_point		*point;
-
-	tmp = e->addr + (sizeof(int) * 2);
-	while ( (size_t)((void*)tmp - e->addr) < e->size)		
-	{
-		point = (t_point*)(tmp);
-		if (point->player.team == e->team && point->player.is_leader)
-		{
-			e->leader = point->player.player;
-			return ;
-		}
-		tmp += sizeof(t_point);
-	}
-	((t_point*)(e->curr_ptr))->player.is_leader = 1;
-	e->leader = 1;
-}
-
-void	mng_player(t_env *e, char *team)
-{
-	printf("Team : %s\n", team);
-	*((int*)e->addr) += 1;
-	if (!check_team_nbr(team))
-		exit(1);
-	e->team = (ft_atoi(team));
-	e->player = getpid();
-	e->num = *((int*)e->addr);
-	e->target = 0;
 }
 
 void		*place_player_start(t_env *e, int x, int y)
@@ -149,44 +96,39 @@ void	starting_point(t_env *e)
 	((t_point*)(loop))->player.num = *((int*)e->addr);
 }
 
-void	init_env(t_env *e, char *team)
-{
-	signal_handling(e);
-	if (find_shm(e) == -1)
-	{
-		init_shm(e);
-		init_sem(e);
-		init_msgq(e);
-		create_board(e);	
-	}
-	else 
-	{
-		find_sem(e);
-		find_msgq(e);
-	}
-	mng_player(e, team);
-	starting_point(e);
-}
-
-int main(int argc, char **argv)
+int 	main(int argc, char **argv)
 {
 	t_env	e;
 
-	e.key = ftok(argv[0], 'a');
+	if ((e.key = ftok(argv[0], 'a')) < 0)
+	{
+		perror("ftok");
+		exit(1);
+	}
+	printf("e.key : %d\n", e.key);
 	if (argc == 2)
 	{
 		init_env(&e, argv[1]);
 		while (1)
 		{
 			op_sem_proberen(&e);
+			if ((*((int*)(e.addr + sizeof(int)))) == 0)
+			{
+				check_start(&e);
+				op_sem_verhogen(&e);
+				continue ;
+			}
 			test_print(&e);
 			if (check_elim(&e))
 				player_lost(&e);
 			msg_read(&e);
 			begin_turn(&e);
 			op_sem_verhogen(&e);
-			if (check_victory(&e))
+			if ((*((int*)(e.addr + sizeof(int)))) == 1 && check_victory(&e))
+			{
 				printf("VICTOIRRRRRRRRE team : %d\n", e.team);
+				kill_player(&e);
+			}	
 			printf("leader : %d\n", e.leader);
 			sleep(2);
 		}

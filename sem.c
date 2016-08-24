@@ -49,7 +49,7 @@ void	op_sem_proberen(t_env *e)
 	{
 		perror("semctl");
 	}
-	printf("getval : %d\n", val);
+	// printf("getval : %d\n", val);
 	buf.sem_num = 0;
 	buf.sem_op = -1;
 	buf.sem_flg = 0;
@@ -62,7 +62,7 @@ void	op_sem_proberen(t_env *e)
 	{
 		perror("semctl");
 	}
-	printf("getval : %d\n", val);
+	// printf("getval : %d\n", val);
 /*
 	semts.buf = &mysemds;
 	if (semctl(e->semid, 0, IPC_STAT, semts) == -1)

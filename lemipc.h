@@ -92,6 +92,14 @@ void	check_leader(t_env *e);
 char	find_target(t_env *e);
 char	follow_foe(t_env *e, t_point *nearest);
 int		check_victory(t_env *e);
+void	check_start(t_env *e);
+int		check_team_nbr(char *team);
+void	check_leader(t_env *e);
+void	mng_player(t_env *e, char *team);
+void	init_env(t_env *e, char *team);
+void	create_board(t_env *e);
+void	starting_point(t_env *e);
+void	kill_player(t_env *e);
 
 
 #endif
