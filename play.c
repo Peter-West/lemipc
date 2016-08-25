@@ -8,13 +8,11 @@ void	test_play(t_env *e)
 	p = (t_point*)(e->curr_ptr);
 	if (e->leader == 1 && (ret = check_dir(e, looking_for_nearest_foe(e))))
 	{
-		printf("SIIIIIIIIIII\n");
 		swap_info(e->curr_ptr, ret);
 		e->curr_ptr = ret;
 	}
 	else if ((ret = check_dir(e, find_target(e))))
 	{
-		printf("SINONNNNNNNNNN SIIIIIIIIIII\n");
 		swap_info(e->curr_ptr, ret);
 		if (ret)
 			e->curr_ptr = ret;
@@ -34,7 +32,6 @@ char	find_target(t_env *e)
 		if (point->player.player > 0 && point->player.player == e->target)
 		{
 			c = follow_foe(e,point);
-			printf("slave character : %c\n", c);
 			return (c);
 		}
 		tmp += sizeof(t_point);
@@ -117,6 +114,6 @@ char	looking_for_nearest_foe(t_env *e)
 	if (nearest)
 		msg_send(e, nearest->player.player);
 	char c = follow_foe(e, nearest);
-	printf("char selected : %c\n", c);
+	// printf("char selected : %c\n", c);
 	return (c);
 }

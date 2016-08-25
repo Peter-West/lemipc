@@ -41,7 +41,6 @@ void	leader_is_last(t_env *e)
 	}
 }
 
-
 void	kill_player(t_env *e)
 {
 	t_point	*data;

@@ -46,4 +46,3 @@ void	*check_dir(t_env *e, char dir)
 	else
 		return (NULL);
 }
-
