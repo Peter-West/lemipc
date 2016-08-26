@@ -19,7 +19,7 @@ INCLUDES	=-I libft/includes
 LIB			=libft/libft.a `sdl2-config --libs`
 SRC			=main.c clean.c play.c move.c turn.c sem.c shm.c msg.c signal.c \
 			end.c start.c
-SRC0		=sdl.c sdl_read.c
+SRC0		=sdl.c sdl_read.c sdl_color.c
 OBJ			=$(SRC:.c=.o)
 OBJ0		=$(SRC0:.c=.o)
 

@@ -34,11 +34,10 @@ void	move_test(t_env_sdl *es)
 
 void	test_div(t_env_sdl *es)
 {
-	
 	Uint8 r,g,b,a;
-	r = 255;
-	g = 0;
-	b = 0;
+	r = rand() % 255;
+	g = rand() % 255;
+	b = rand() % 255;
 	a = 255;
 	SDL_SetRenderDrawColor(es->renderer, r, g, b, a);
 	move_test(es);
@@ -71,7 +70,7 @@ void	fill_board_vertical(t_env_sdl *es)
 	x = MIN;
 	while (i < BOARD_SIZE_X)
 	{
-		printf("X : %f\n", x);
+		// printf("X : %f\n", x);
 		es->board_x[i] = x;
 		x += (MAX - MIN) / (BOARD_SIZE_X - 1);
 		i++;
@@ -88,7 +87,7 @@ void	fill_board_horizontal(t_env_sdl *es)
 	y = MIN;
 	while (i < BOARD_SIZE_Y)
 	{
-		printf("Y : %f\n", y);
+		// printf("Y : %f\n", y);
 		es->board_y[i] = y;
 		y += (MAX - MIN) / (BOARD_SIZE_Y - 1);
 		i++;
@@ -174,15 +173,31 @@ void	destroy_window(t_env_sdl *es)
     SDL_Quit();
 }
 
+void	clear_color(t_env_sdl *es)
+{
+	t_color	*tmp;
+
+	while (es->color)
+	{
+		tmp = es->color;
+		es->color = es->color->next;
+		free(tmp);
+		tmp = NULL;
+	}
+}
+
 int		main(void)
 {
 	t_env_sdl	es;
 	
+	es.color = NULL;
+	srand(time(NULL));
 	fill_board_vertical(&es);
 	fill_board_horizontal(&es);
-	find_shm_sdl(&es);
+	if (find_shm_sdl(&es) == -1)
+		return (1);
 	create_window(&es);
-
+	clear_color(&es);
 	destroy_window(&es);
 	return (0);
 }

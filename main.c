@@ -1,6 +1,5 @@
 #include "lemipc.h"
 
-
 void	test_print(t_env *e)
 {
 	int		i;
@@ -8,7 +7,6 @@ void	test_print(t_env *e)
 
 	i = 0;
 	printf("number of player : %d\n", *((int*)e->addr));
-	printf("start : %d\n", *((int*)(e->addr + sizeof(int))));
 	tmp = e->addr + (sizeof(int) * 2);
 	while ( (size_t)((void*)tmp - e->addr) < e->size)
 	{
@@ -130,7 +128,7 @@ int 	main(int argc, char **argv)
 				kill_player(&e);
 			}	
 			printf("leader : %d\n", e.leader);
-			sleep(2);
+			usleep(500000);
 		}
 	}
 	else

@@ -1,8 +1,8 @@
 #ifndef LEMIPC_H
 # define LEMIPC_H
 
-# define BOARD_SIZE_X	10
-# define BOARD_SIZE_Y	5
+# define BOARD_SIZE_X	20
+# define BOARD_SIZE_Y	20
 # define MAX_PLAYER		50
 # define MAX_TEAM		10
 # define TEXT_SIZE		20
