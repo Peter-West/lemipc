@@ -20,7 +20,7 @@ void	check_start(t_env *e)
 		if (same_team_player > 1 && point->player.team != e->team
 			&& point->player.is_playing)
 		{
-			// printf("STARTTT *** \n");
+			printf("STARTTT *** \n");
 			*((int*)(e->addr + sizeof(int))) = 1;
 			return ;
 		}

@@ -65,6 +65,8 @@ int		check_elim(t_env *e)
 	right = -1;
 	left = -1;
 	point = (t_point*)(e->curr_ptr);
+	if (!point)
+		return (0);
 	if (point->y - 1 >= 0)
 		up = ret_team(e, point->x, point->y - 1);
 	if (point->y + 1 <= BOARD_SIZE_Y)

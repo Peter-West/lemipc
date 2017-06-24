@@ -6,7 +6,7 @@ void	init_sem(t_env *e)
 	// union semun			semts;
 	// struct semid_ds		mysemds;
 
-	if ((e->semid = semget(e->key, 1, IPC_CREAT | 0666)) < 0)
+	if ((e->semid = semget(e->key, 1, IPC_CREAT | IPC_EXCL | 0666)) < 0)
 	{
 		perror("semget init");
 		exit(1);
@@ -45,6 +45,8 @@ void	op_sem_proberen(t_env *e)
 	// struct semid_ds		mysemds;
 	int					val;
 
+
+	printf("op sem prob 0\n");
 	if ((val = semctl(e->semid, 0, GETVAL)) < 0)
 	{
 		perror("semctl");
@@ -53,15 +55,18 @@ void	op_sem_proberen(t_env *e)
 	buf.sem_num = 0;
 	buf.sem_op = -1;
 	buf.sem_flg = 0;
+	printf("op sem prob 1\n");
 	if (semop(e->semid, &buf, 1) < 0)
 	{
 		perror("semop op");
 		exit(1);
 	}
+	printf("op sem prob 2\n");
 	if ((val = semctl(e->semid, 0, GETVAL)) < 0)
 	{
 		perror("semctl");
 	}
+	printf("op sem prob 3\n");
 	// printf("getval : %d\n", val);
 /*
 	semts.buf = &mysemds;

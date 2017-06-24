@@ -103,23 +103,28 @@ int 	main(int argc, char **argv)
 		perror("ftok");
 		exit(1);
 	}
-	printf("e.key : %d\n", e.key);
+	// printf("e.key : %d\n", e.key);
 	if (argc == 2)
 	{
 		init_env(&e, argv[1]);
 		while (1)
 		{
+			printf("ICI\n");
 			op_sem_proberen(&e);
+			printf("LA\n");
+			// printf("heya\n");
 			if ((*((int*)(e.addr + sizeof(int)))) == 0)
 			{
 				check_start(&e);
 				op_sem_verhogen(&e);
 				continue ;
 			}
+			printf("hey0\n");
 			test_print(&e);
 			if (check_elim(&e))
 				player_lost(&e);
 			msg_read(&e);
+			printf("hey1\n");
 			begin_turn(&e);
 			op_sem_verhogen(&e);
 			if ((*((int*)(e.addr + sizeof(int)))) == 1 && check_victory(&e))

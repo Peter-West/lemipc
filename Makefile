@@ -13,10 +13,12 @@
 NAME		=lemipc
 NAME0		=display
 VERSION		=0.0.1
-CFLAGS		=-Wall -Werror -Wextra -g `sdl2-config --cflags`
-CC 			= clang-3.5
+# CFLAGS		=-Wall -Werror -Wextra -g `sdl2-config --cflags`
+CFLAGS		=-Wall -Werror -Wextra -g -F /Library/Frameworks/SDL2.framework/Headers
+CC 			= clang
 INCLUDES	=-I libft/includes
-LIB			=libft/libft.a `sdl2-config --libs`
+# LIB			=libft/libft.a `sdl2-config --libs`
+LIB			=libft/libft.a -framework SDL2 -framework Cocoa
 SRC			=main.c clean.c play.c move.c turn.c sem.c shm.c msg.c signal.c \
 			end.c start.c
 SRC0		=sdl.c sdl_read.c sdl_color.c

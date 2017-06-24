@@ -4,7 +4,7 @@ void	init_msgq(t_env *e)
 {
 	struct msqid_ds buf;
 
-	if ((e->msgqid = msgget(e->key, (IPC_CREAT | 0644))) == -1)
+	if ((e->msgqid = msgget(e->key, (IPC_CREAT | IPC_EXCL | 0644))) == -1)
 	{
 		perror("msgget init");
 		exit(1);
